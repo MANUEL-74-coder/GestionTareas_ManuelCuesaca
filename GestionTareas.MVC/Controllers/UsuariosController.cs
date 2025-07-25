@@ -20,7 +20,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.GetAsync(_apiUrl + "usuarios");
+            var respuesta = await cliente.GetAsync(_apiUrl + "Usuarios");
             var lista = new List<Usuario>();
             if (respuesta.IsSuccessStatusCode)
             {
@@ -38,7 +38,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "usuarios", usuario);
+            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "Usuarios", usuario);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(usuario);
         }
@@ -48,7 +48,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.GetAsync(_apiUrl + "usuarios/" + id);
+            var respuesta = await cliente.GetAsync(_apiUrl + "Usuarios/" + id);
             if (!respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             var usuario = JsonConvert.DeserializeObject<Usuario>(await respuesta.Content.ReadAsStringAsync());
             return View(usuario);
@@ -60,7 +60,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "usuarios/" + usuario.Id, usuario);
+            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "Usuarios/" + usuario.Id, usuario);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(usuario);
         }
@@ -70,7 +70,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            await cliente.DeleteAsync(_apiUrl + "usuarios/" + id);
+            await cliente.DeleteAsync(_apiUrl + "Usuarios/" + id);
             return RedirectToAction("Index");
         }
     }

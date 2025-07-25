@@ -52,7 +52,7 @@ namespace GestionTareas.API.Controllers
             return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });
         }
 
-        [HttpPost("registro")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] Usuario usuario)
         {
             using var conexion = new SqlConnection(_cadenaConexion);

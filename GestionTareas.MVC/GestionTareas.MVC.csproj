@@ -10,8 +10,4 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\GestioTareas.API\GestionTareas.API.csproj" />
-  </ItemGroup>
-
 </Project>

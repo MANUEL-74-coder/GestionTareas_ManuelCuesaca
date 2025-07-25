@@ -1,7 +1,7 @@
 ﻿@model List<GestionTareas.MVC.Models.Usuario>
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 <h2>Lista de Usuarios</h2>
-<a href="@Url.Action("Crear")" class="btn btn-primary mb-2">Nuevo Usuario</a>
+<a href="@Url.Action("Create")" class="btn btn-primary mb-2">Nuevo Usuario</a>
 <table class="table">
     <thead>
         <tr>
@@ -17,8 +17,8 @@
                 <td>@usuario.NombreUsuario</td>
                 <td>@usuario.Correo</td>
                 <td>
-                    <a href="@Url.Action("Editar", new { id = usuario.Id })" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="@Url.Action("Eliminar", new { id = usuario.Id })" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="@Url.Action("Edit", new { id = usuario.Id })" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="@Url.Action("Delete", new { id = usuario.Id })" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
             </tr>
         }

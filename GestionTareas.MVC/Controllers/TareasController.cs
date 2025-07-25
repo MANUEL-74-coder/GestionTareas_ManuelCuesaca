@@ -28,13 +28,13 @@ namespace GestionTareas.MVC.Controllers
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             var query = new List<string>();
-            if (!string.IsNullOrEmpty(estado)) query.Add($"estado={Uri.EscapeDataString(estado)}");
-            if (!string.IsNullOrEmpty(prioridad)) query.Add($"prioridad={Uri.EscapeDataString(prioridad)}");
+            if (!string.IsNullOrEmpty(estado)) query.Add($"Estado={Uri.EscapeDataString(estado)}");
+            if (!string.IsNullOrEmpty(prioridad)) query.Add($"Prioridad={Uri.EscapeDataString(prioridad)}");
             if (!string.IsNullOrEmpty(buscar)) query.Add($"buscar={Uri.EscapeDataString(buscar)}");
-            if (proyectoId != null) query.Add($"proyectoId={proyectoId}");
-            if (usuarioAsignadoId != null) query.Add($"usuarioAsignadoId={usuarioAsignadoId}");
+            if (proyectoId != null) query.Add($"ProyectoId={proyectoId}");
+            if (usuarioAsignadoId != null) query.Add($"UsuarioAsignadoId={usuarioAsignadoId}");
             if (!string.IsNullOrEmpty(ordenarPor)) query.Add($"ordenarPor={Uri.EscapeDataString(ordenarPor)}");
-            var url = _apiUrl + "tareas";
+            var url = _apiUrl + "Tareas";
             if (query.Count > 0) url += "?" + string.Join("&", query);
 
             var respuesta = await cliente.GetAsync(url);
@@ -61,7 +61,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "tareas", tarea);
+            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "Tareas", tarea);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(tarea);
         }
@@ -71,7 +71,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.GetAsync(_apiUrl + "tareas/" + id);
+            var respuesta = await cliente.GetAsync(_apiUrl + "Tareas/" + id);
             if (!respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             var tarea = JsonConvert.DeserializeObject<Tarea>(await respuesta.Content.ReadAsStringAsync());
             return View(tarea);
@@ -83,7 +83,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "tareas/" + tarea.Id, tarea);
+            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "Tareas/" + tarea.Id, tarea);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(tarea);
         }
@@ -93,7 +93,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            await cliente.DeleteAsync(_apiUrl + "tareas/" + id);
+            await cliente.DeleteAsync(_apiUrl + "Tareas/" + id);
             return RedirectToAction("Index");
         }
     }

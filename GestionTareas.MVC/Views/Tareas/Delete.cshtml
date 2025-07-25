@@ -2,7 +2,7 @@
 
 <h2>Eliminar Tarea</h2>
 <h4>¿Estás seguro que deseas eliminar la tarea "@Model.Titulo"?</h4>
-<form method="post" asp-action="Eliminar" asp-route-id="@Model.Id">
+<form method="post" asp-action="Delete" asp-route-id="@Model.Id">
     <button type="submit" class="btn btn-danger">Eliminar</button>
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>

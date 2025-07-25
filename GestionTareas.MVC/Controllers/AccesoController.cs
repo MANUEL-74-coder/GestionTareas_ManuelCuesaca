@@ -13,7 +13,7 @@ namespace GestionTareas.MVC.Controllers
         public AccesoController(IHttpClientFactory httpClientFactory, IConfiguration config)
         {
             _httpClientFactory = httpClientFactory;
-            _apiUrl = config["ApiUrl"];
+            _apiUrl = config["ApiUrl"].TrimEnd('/');
         }
 
         public IActionResult Login() => View();
@@ -22,8 +22,14 @@ namespace GestionTareas.MVC.Controllers
         public async Task<IActionResult> Login(Usuario usuario)
         {
             var cliente = _httpClientFactory.CreateClient();
-            var contenido = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");
-            var respuesta = await cliente.PostAsync(_apiUrl + "auth/login", contenido);
+            var payload = new
+            {
+                nombreUsuario = usuario.NombreUsuario,
+                contrasenaHash = usuario.ContrasenaHash
+            };
+
+            var contenido = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var respuesta = await cliente.PostAsync($"{_apiUrl}/auth/login", contenido);
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -34,17 +40,25 @@ namespace GestionTareas.MVC.Controllers
             var json = await respuesta.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<dynamic>(json);
             HttpContext.Session.SetString("token", (string)obj.token);
-            return RedirectToAction("Index", "Proyectos");
+
+            return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult Registro() => View();
+        public IActionResult Register() => View();
 
         [HttpPost]
         public async Task<IActionResult> Register(Usuario usuario)
         {
             var cliente = _httpClientFactory.CreateClient();
-            var contenido = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");
-            var respuesta = await cliente.PostAsync(_apiUrl + "auth/registro", contenido);
+            var payload = new
+            {
+                nombreUsuario = usuario.NombreUsuario,
+                correo = usuario.Correo,
+                contrasenaHash = usuario.ContrasenaHash
+            };
+
+            var contenido = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+            var respuesta = await cliente.PostAsync($"{_apiUrl}/auth/register", contenido);
 
             if (!respuesta.IsSuccessStatusCode)
             {

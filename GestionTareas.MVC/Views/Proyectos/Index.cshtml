@@ -1,5 +1,5 @@
 ﻿@model List<GestionTareas.MVC.Models.Proyecto>
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 <h2>Lista de Proyectos</h2>
 <a href="@Url.Action("Crear")" class="btn btn-primary mb-2">Nuevo Proyecto</a>
 <table class="table">
@@ -17,8 +17,8 @@
                 <td>@proyecto.Nombre</td>
                 <td>@proyecto.Descripcion</td>
                 <td>
-                    <a href="@Url.Action("Editar", new { id = proyecto.Id })" class="btn btn-warning btn-sm">Editar</a>
-                    <a href="@Url.Action("Eliminar", new { id = proyecto.Id })" class="btn btn-danger btn-sm">Eliminar</a>
+                    <a href="@Url.Action("Edit", new { id = proyecto.Id })" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="@Url.Action("Delete", new { id = proyecto.Id })" class="btn btn-danger btn-sm">Eliminar</a>
                 </td>
             </tr>
         }
