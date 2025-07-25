@@ -1,0 +1,26 @@
+﻿@model List<GestionTareas.MVC.Models.Proyecto>
+
+<h2>Lista de Proyectos</h2>
+<a href="@Url.Action("Crear")" class="btn btn-primary mb-2">Nuevo Proyecto</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var proyecto in Model)
+        {
+            <tr>
+                <td>@proyecto.Nombre</td>
+                <td>@proyecto.Descripcion</td>
+                <td>
+                    <a href="@Url.Action("Editar", new { id = proyecto.Id })" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="@Url.Action("Eliminar", new { id = proyecto.Id })" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
