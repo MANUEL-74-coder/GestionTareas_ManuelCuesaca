@@ -19,13 +19,16 @@ namespace GestionTareas.MVC.Controllers
         public IActionResult Login() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Login(Usuario usuario)
+        public async Task<IActionResult> Login(LoginViewModel login)
         {
+            if (!ModelState.IsValid)
+                return View(login);
+
             var cliente = _httpClientFactory.CreateClient();
             var payload = new
             {
-                nombreUsuario = usuario.NombreUsuario,
-                contrasenaHash = usuario.ContrasenaHash
+                nombreUsuario = login.NombreUsuario,
+                contrasenaHash = login.ContrasenaHash
             };
 
             var contenido = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
@@ -34,17 +37,19 @@ namespace GestionTareas.MVC.Controllers
             if (!respuesta.IsSuccessStatusCode)
             {
                 ModelState.AddModelError("", "Usuario o contraseña incorrectos");
-                return View(usuario);
+                return View(login);
             }
 
             var json = await respuesta.Content.ReadAsStringAsync();
             var obj = JsonConvert.DeserializeObject<dynamic>(json);
             HttpContext.Session.SetString("token", (string)obj.token);
 
-            return RedirectToAction("Index", "Home");
+            // Redirige a la vista Index de Usuarios
+            return RedirectToAction("Index", "Usuarios");
         }
 
         public IActionResult Register() => View();
+    
 
         [HttpPost]
         public async Task<IActionResult> Register(Usuario usuario)

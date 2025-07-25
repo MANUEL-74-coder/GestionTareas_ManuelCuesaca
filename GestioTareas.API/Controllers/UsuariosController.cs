@@ -1,4 +1,4 @@
-﻿//using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using System.Data.SqlClient;
@@ -6,7 +6,7 @@ using GestionTareas.API.Models;
 
 namespace GestionTareas.API.Controllers
 {
-   // [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsuariosController : ControllerBase

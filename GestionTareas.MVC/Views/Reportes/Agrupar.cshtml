@@ -1,0 +1,36 @@
+﻿@model IEnumerable<IGrouping<int, GestionTareas.MVC.Models.Tarea>>
+
+@{
+    ViewData["Title"] = "Reporte Agrupado";
+}
+
+<h2>@ViewData["Title"] por @ViewBag.AgrupadoPor</h2>
+@foreach (var grupo in Model)
+{
+    <h4>@ViewBag.AgrupadoPor ID: @grupo.Key</h4>
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Fecha Vencimiento</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarea in grupo)
+            {
+                <tr>
+                    <td>@tarea.Id</td>
+                    <td>@tarea.Titulo</td>
+                    <td>@tarea.Descripcion</td>
+                    <td>@tarea.Estado</td>
+                    <td>@tarea.Prioridad</td>
+                    <td>@(tarea.FechaVencimiento?.ToShortDateString() ?? "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

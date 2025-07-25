@@ -20,7 +20,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.GetAsync(_apiUrl + "Proyectos");
+            var respuesta = await cliente.GetAsync(_apiUrl + "proyectos");
             if (!respuesta.IsSuccessStatusCode) return View(new List<Proyecto>());
             var json = await respuesta.Content.ReadAsStringAsync();
             var lista = JsonConvert.DeserializeObject<List<Proyecto>>(json);
@@ -35,7 +35,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "Proyectos", proyecto);
+            var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "proyectos", proyecto);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(proyecto);
         }
@@ -45,7 +45,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.GetAsync(_apiUrl + "Proyectos/" + id);
+            var respuesta = await cliente.GetAsync(_apiUrl + "proyectos/" + id);
             if (!respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             var proyecto = JsonConvert.DeserializeObject<Proyecto>(await respuesta.Content.ReadAsStringAsync());
             return View(proyecto);
@@ -57,7 +57,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "Proyectos/" + proyecto.Id, proyecto);
+            var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "proyectos/" + proyecto.Id, proyecto);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(proyecto);
         }
@@ -67,7 +67,7 @@ namespace GestionTareas.MVC.Controllers
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-            await cliente.DeleteAsync(_apiUrl + "Proyectos/" + id);
+            await cliente.DeleteAsync(_apiUrl + "proyectos/" + id);
             return RedirectToAction("Index");
         }
     }

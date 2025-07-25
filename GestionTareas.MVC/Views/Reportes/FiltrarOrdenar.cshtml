@@ -1,0 +1,65 @@
+﻿@model List<GestionTareas.MVC.Models.Tarea>
+
+@{
+    ViewData["Title"] = "Reporte de Tareas (Filtrar / Ordenar)";
+}
+
+<h2>@ViewData["Title"]</h2>
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <select name="estado" class="form-select">
+            <option value="">Todos los estados</option>
+            <option>Pendiente</option>
+            <option>En Progreso</option>
+            <option>Completada</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="prioridad" class="form-select">
+            <option value="">Todas las prioridades</option>
+            <option>Alta</option>
+            <option>Media</option>
+            <option>Baja</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="orden" class="form-select">
+            <option value="">Sin Orden</option>
+            <option value="fecha">Fecha de Vencimiento</option>
+            <option value="prioridad">Prioridad</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary w-100">Filtrar/Ordenar</button>
+    </div>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Fecha Vencimiento</th>
+            <th>ProyectoId</th>
+            <th>Usuario AsignadoId</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tarea in Model)
+        {
+            <tr>
+                <td>@tarea.Id</td>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.Descripcion</td>
+                <td>@tarea.Estado</td>
+                <td>@tarea.Prioridad</td>
+                <td>@(tarea.FechaVencimiento?.ToShortDateString() ?? "-")</td>
+                <td>@tarea.ProyectoId</td>
+                <td>@tarea.UsuarioAsignadoId</td>
+            </tr>
+        }
+    </tbody>
+</table>

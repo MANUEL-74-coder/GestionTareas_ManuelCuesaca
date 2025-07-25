@@ -27,7 +27,8 @@ namespace GestionTareas.API.Controllers
         {
             using var conexion = new SqlConnection(_cadenaConexion);
             var user = await conexion.QueryFirstOrDefaultAsync<Usuario>(
-                "SELECT * FROM Usuarios WHERE NombreUsuario = @NombreUsuario AND ContrasenaHash = @ContrasenaHash",
+                // Permite login por usuario o correo
+                "SELECT * FROM Usuarios WHERE (NombreUsuario = @NombreUsuario OR Correo = @NombreUsuario) AND ContrasenaHash = @ContrasenaHash",
                 new { usuario.NombreUsuario, usuario.ContrasenaHash });
 
             if (user == null)
@@ -35,9 +36,9 @@ namespace GestionTareas.API.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.NombreUsuario),
-                new Claim("UsuarioId", user.Id.ToString())
-            };
+        new Claim(ClaimTypes.Name, user.NombreUsuario),
+        new Claim("UsuarioId", user.Id.ToString())
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
