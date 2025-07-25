@@ -1,0 +1,80 @@
+﻿@model List<GestionTareas.MVC.Models.Tarea>
+
+@{
+    var estado = (string)(ViewBag.Estado ?? "");
+    var prioridad = (string)(ViewBag.Prioridad ?? "");
+    var ordenarPor = (string)(ViewBag.OrdenarPor ?? "");
+    var buscar = (string)(ViewBag.Buscar ?? "");
+}
+
+<h2>Lista de Tareas</h2>
+<a href="@Url.Action("Crear")" class="btn btn-primary mb-2">Nueva Tarea</a>
+
+<form method="get" class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+    <div class="col">
+        <input type="text" name="buscar" value="@buscar" placeholder="Buscar por título o descripción..." class="form-control" />
+    </div>
+    <div class="col">
+        <select name="estado" class="form-select">
+            <option value="" @(string.IsNullOrEmpty(estado) ? "selected" : "")>Estado</option>
+            <option value="Pendiente" @(estado == "Pendiente" ? "selected" : "")>Pendiente</option>
+            <option value="En Progreso" @(estado == "En Progreso" ? "selected" : "")>En Progreso</option>
+            <option value="Completada" @(estado == "Completada" ? "selected" : "")>Completada</option>
+        </select>
+    </div>
+    <div class="col">
+        <select name="prioridad" class="form-select">
+            <option value="" @(string.IsNullOrEmpty(prioridad) ? "selected" : "")>Prioridad</option>
+            <option value="Baja" @(prioridad == "Baja" ? "selected" : "")>Baja</option>
+            <option value="Media" @(prioridad == "Media" ? "selected" : "")>Media</option>
+            <option value="Alta" @(prioridad == "Alta" ? "selected" : "")>Alta</option>
+        </select>
+    </div>
+    <div class="col">
+        <select name="ordenarPor" class="form-select">
+            <option value="" @(string.IsNullOrEmpty(ordenarPor) ? "selected" : "")>Ordenar por</option>
+            <option value="Estado" @(ordenarPor == "Estado" ? "selected" : "")>Estado</option>
+            <option value="Prioridad" @(ordenarPor == "Prioridad" ? "selected" : "")>Prioridad</option>
+            <option value="FechaVencimiento" @(ordenarPor == "FechaVencimiento" ? "selected" : "")>Fecha de Vencimiento</option>
+        </select>
+    </div>
+    <div class="col">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Estado</th>
+            <th>Prioridad</th>
+            <th>Fecha Vencimiento</th>
+            <th>Proyecto</th>
+            <th>Usuario Asignado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+    @if (Model != null)
+    {
+        foreach (var tarea in Model)
+        {
+            <tr>
+                <td>@tarea.Titulo</td>
+                <td>@tarea.Descripcion</td>
+                <td>@tarea.Estado</td>
+                <td>@tarea.Prioridad</td>
+                <td>@(tarea.FechaVencimiento?.ToShortDateString())</td>
+                <td>@tarea.ProyectoId</td>
+                <td>@tarea.UsuarioAsignadoId</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = tarea.Id })" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="@Url.Action("Delete", new { id = tarea.Id })" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    }
+    </tbody>
+</table>

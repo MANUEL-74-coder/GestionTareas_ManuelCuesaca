@@ -9,5 +9,32 @@
     <div class="container mt-4">
         @RenderBody()
     </div>
+    <nav class="sidebar-nav">
+        <!-- Navegación común -->
+        <ul class="nav-section">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                    <span>Inicio</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Proyectos" asp-action="Index">
+                    <span>Poyectos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Usuarios" asp-action="Index">
+                    <span>Usuarios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Tareas" asp-action="Index">
+                    <span>Tareas</span>
+                </a>
+            </li>
+           
+          
+        </ul>
+    </nav>
 </body>
 </html>

@@ -1,7 +1,7 @@
 ﻿using GestionTareas.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
+using System.Text;
 
 namespace GestionTareas.MVC.Controllers
 {
@@ -16,66 +16,61 @@ namespace GestionTareas.MVC.Controllers
             _apiUrl = config["ApiUrl"];
         }
 
-        // Listar todas las tareas + filtros y reportes
-        public async Task<IActionResult> Index(string estado, string prioridad, DateTime? fechaVencimiento, int? proyectoId, int? usuarioId)
+        public async Task<IActionResult> Index(string estado, string prioridad, string buscar, int? proyectoId, int? usuarioAsignadoId, string ordenarPor)
         {
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (string.IsNullOrEmpty(token))
+            {
+                // Manejar caso de token no disponible (redirección a login, por ejemplo)
+                return RedirectToAction("Login", "Account");
+            }
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+            var query = new List<string>();
+            if (!string.IsNullOrEmpty(estado)) query.Add($"estado={Uri.EscapeDataString(estado)}");
+            if (!string.IsNullOrEmpty(prioridad)) query.Add($"prioridad={Uri.EscapeDataString(prioridad)}");
+            if (!string.IsNullOrEmpty(buscar)) query.Add($"buscar={Uri.EscapeDataString(buscar)}");
+            if (proyectoId != null) query.Add($"proyectoId={proyectoId}");
+            if (usuarioAsignadoId != null) query.Add($"usuarioAsignadoId={usuarioAsignadoId}");
+            if (!string.IsNullOrEmpty(ordenarPor)) query.Add($"ordenarPor={Uri.EscapeDataString(ordenarPor)}");
             var url = _apiUrl + "tareas";
+            if (query.Count > 0) url += "?" + string.Join("&", query);
+
             var respuesta = await cliente.GetAsync(url);
-            var tareas = respuesta.IsSuccessStatusCode
-                ? JsonConvert.DeserializeObject<List<Tarea>>(await respuesta.Content.ReadAsStringAsync())
-                : new List<Tarea>();
-
-            // Filtros locales
-            if (!string.IsNullOrWhiteSpace(estado))
-                tareas = tareas.Where(t => t.Estado == estado).ToList();
-            if (!string.IsNullOrWhiteSpace(prioridad))
-                tareas = tareas.Where(t => t.Prioridad == prioridad).ToList();
-            if (fechaVencimiento.HasValue)
-                tareas = tareas.Where(t => t.FechaVencimiento.HasValue && t.FechaVencimiento.Value.Date == fechaVencimiento.Value.Date).ToList();
-            if (proyectoId.HasValue)
-                tareas = tareas.Where(t => t.ProyectoId == proyectoId).ToList();
-            if (usuarioId.HasValue)
-                tareas = tareas.Where(t => t.UsuarioAsignadoId == usuarioId).ToList();
-
-            // Para desplegar filtros en el frontend
+            var lista = new List<Tarea>();
+            if (respuesta.IsSuccessStatusCode)
+            {
+                var json = await respuesta.Content.ReadAsStringAsync();
+                lista = JsonConvert.DeserializeObject<List<Tarea>>(json) ?? new List<Tarea>();
+            }
             ViewBag.Estado = estado;
             ViewBag.Prioridad = prioridad;
-            ViewBag.FechaVencimiento = fechaVencimiento?.ToString("yyyy-MM-dd");
+            ViewBag.Buscar = buscar;
             ViewBag.ProyectoId = proyectoId;
-            ViewBag.UsuarioId = usuarioId;
-
-            return View(tareas);
+            ViewBag.UsuarioAsignadoId = usuarioAsignadoId;
+            ViewBag.OrdenarPor = ordenarPor;
+            return View(lista);
         }
 
-        public async Task<IActionResult> Create()
-        {
-            await CargarProyectosYUsuarios();
-            return View();
-        }
+        public IActionResult Crear() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Crear(Tarea tarea)
+        public async Task<IActionResult> Create(Tarea tarea)
         {
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await cliente.PostAsJsonAsync(_apiUrl + "tareas", tarea);
-            if (respuesta.IsSuccessStatusCode)
-                return RedirectToAction("Index");
-            await CargarProyectosYUsuarios();
+            if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             return View(tarea);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
-            await CargarProyectosYUsuarios();
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await cliente.GetAsync(_apiUrl + "tareas/" + id);
             if (!respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
             var tarea = JsonConvert.DeserializeObject<Tarea>(await respuesta.Content.ReadAsStringAsync());
@@ -83,14 +78,13 @@ namespace GestionTareas.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edi(Tarea tarea)
+        public async Task<IActionResult> Edit(Tarea tarea)
         {
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var respuesta = await cliente.PutAsJsonAsync(_apiUrl + "tareas/" + tarea.Id, tarea);
             if (respuesta.IsSuccessStatusCode) return RedirectToAction("Index");
-            await CargarProyectosYUsuarios();
             return View(tarea);
         }
 
@@ -98,31 +92,9 @@ namespace GestionTareas.MVC.Controllers
         {
             var cliente = _httpClientFactory.CreateClient();
             var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             await cliente.DeleteAsync(_apiUrl + "tareas/" + id);
             return RedirectToAction("Index");
-        }
-
-        // Helper para combos de proyectos y usuarios
-        private async Task CargarProyectosYUsuarios()
-        {
-            var cliente = _httpClientFactory.CreateClient();
-            var token = HttpContext.Session.GetString("token");
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-            // Proyectos
-            var respProy = await cliente.GetAsync(_apiUrl + "proyectos");
-            var proyectos = respProy.IsSuccessStatusCode
-                ? JsonConvert.DeserializeObject<List<Proyecto>>(await respProy.Content.ReadAsStringAsync())
-                : new List<Proyecto>();
-            ViewBag.Proyectos = proyectos;
-
-            // Usuarios
-            var respUsu = await cliente.GetAsync(_apiUrl + "usuarios");
-            var usuarios = respUsu.IsSuccessStatusCode
-                ? JsonConvert.DeserializeObject<List<Usuario>>(await respUsu.Content.ReadAsStringAsync())
-                : new List<Usuario>();
-            ViewBag.Usuarios = usuarios;
         }
     }
 }

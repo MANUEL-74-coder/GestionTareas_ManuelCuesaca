@@ -40,7 +40,7 @@ namespace GestionTareas.MVC.Controllers
         public IActionResult Registro() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Registro(Usuario usuario)
+        public async Task<IActionResult> Register(Usuario usuario)
         {
             var cliente = _httpClientFactory.CreateClient();
             var contenido = new StringContent(JsonConvert.SerializeObject(usuario), Encoding.UTF8, "application/json");

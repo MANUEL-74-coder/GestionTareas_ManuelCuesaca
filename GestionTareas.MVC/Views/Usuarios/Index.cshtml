@@ -1,0 +1,26 @@
+﻿@model List<GestionTareas.MVC.Models.Usuario>
+
+<h2>Lista de Usuarios</h2>
+<a href="@Url.Action("Crear")" class="btn btn-primary mb-2">Nuevo Usuario</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var usuario in Model)
+        {
+            <tr>
+                <td>@usuario.NombreUsuario</td>
+                <td>@usuario.Correo</td>
+                <td>
+                    <a href="@Url.Action("Editar", new { id = usuario.Id })" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="@Url.Action("Eliminar", new { id = usuario.Id })" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

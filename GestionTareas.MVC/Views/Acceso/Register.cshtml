@@ -1,7 +1,7 @@
 ﻿@model GestionTareas.MVC.Models.Usuario
 
-<h2>Iniciar Sesión</h2>
-<form asp-action="Login" method="post">
+<h2>Registro de Usuario</h2>
+<form asp-action="Register" method="post">
     <div class="form-group">
         <label>Nombre de usuario</label>
         <input asp-for="NombreUsuario" class="form-control" />
@@ -10,9 +10,10 @@
         <label>Contraseña</label>
         <input asp-for="ContrasenaHash" class="form-control" type="password" />
     </div>
-    <button type="submit" class="btn btn-primary">Ingresar</button>
+    <button type="submit" class="btn btn-success">Registrarse</button>
 </form>
 
 <div class="mt-3">
-    <a href="@Url.Action("Register", "Usuario")" class="btn btn-secondary">Registrarse</a>
+    <a href="@Url.Action("Login", "Usuario")" class="btn btn-secondary">Volver al login</a>
 </div>
+}
