@@ -6,7 +6,7 @@ using GestionTareas.API.Models;
 
 namespace GestionTareas.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TareasController : ControllerBase

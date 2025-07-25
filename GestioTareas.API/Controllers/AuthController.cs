@@ -53,7 +53,7 @@ namespace GestionTareas.API.Controllers
         }
 
         [HttpPost("registro")]
-        public async Task<IActionResult> Registro([FromBody] Usuario usuario)
+        public async Task<IActionResult> Register([FromBody] Usuario usuario)
         {
             using var conexion = new SqlConnection(_cadenaConexion);
             var existe = await conexion.QueryFirstOrDefaultAsync<Usuario>(

@@ -6,14 +6,14 @@ using GestionTareas.API.Models;
 
 namespace GestionTareas.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ProyectosController : ControllerBase
+    public class UsuariosController : ControllerBase
     {
         private readonly string _cadenaConexion;
 
-        public ProyectosController(IConfiguration config)
+        public UsuariosController(IConfiguration config)
         {
             _cadenaConexion = config.GetConnectionString("DefaultConnection");
         }
@@ -22,34 +22,34 @@ namespace GestionTareas.API.Controllers
         public async Task<IActionResult> Get()
         {
             using var conexion = new SqlConnection(_cadenaConexion);
-            var proyectos = await conexion.QueryAsync<Proyecto>("SELECT * FROM Proyectos");
-            return Ok(proyectos);
+            var usuarios = await conexion.QueryAsync<Usuario>("SELECT * FROM Usuarios");
+            return Ok(usuarios);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             using var conexion = new SqlConnection(_cadenaConexion);
-            var proyecto = await conexion.QueryFirstOrDefaultAsync<Proyecto>("SELECT * FROM Proyectos WHERE Id = @Id", new { Id = id });
-            return proyecto == null ? NotFound() : Ok(proyecto);
+            var usuario = await conexion.QueryFirstOrDefaultAsync<Usuario>("SELECT * FROM Usuarios WHERE Id = @Id", new { Id = id });
+            return usuario == null ? NotFound() : Ok(usuario);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Proyecto proyecto)
+        public async Task<IActionResult> Post([FromBody] Usuario usuario)
         {
             using var conexion = new SqlConnection(_cadenaConexion);
-            var sql = "INSERT INTO Proyectos (Nombre, Descripcion) VALUES (@Nombre, @Descripcion)";
-            await conexion.ExecuteAsync(sql, proyecto);
+            var sql = "INSERT INTO Usuarios (NombreUsuario, Correo, ContrasenaHash) VALUES (@NombreUsuario, @Correo, @ContrasenaHash)";
+            await conexion.ExecuteAsync(sql, usuario);
             return Ok();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] Proyecto proyecto)
+        public async Task<IActionResult> Put(int id, [FromBody] Usuario usuario)
         {
-            proyecto.Id = id;
+            usuario.Id = id;
             using var conexion = new SqlConnection(_cadenaConexion);
-            var sql = "UPDATE Proyectos SET Nombre = @Nombre, Descripcion = @Descripcion WHERE Id = @Id";
-            await conexion.ExecuteAsync(sql, proyecto);
+            var sql = "UPDATE Usuarios SET NombreUsuario = @NombreUsuario, Correo = @Correo, ContrasenaHash = @ContrasenaHash WHERE Id = @Id";
+            await conexion.ExecuteAsync(sql, usuario);
             return Ok();
         }
 
@@ -57,7 +57,7 @@ namespace GestionTareas.API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             using var conexion = new SqlConnection(_cadenaConexion);
-            await conexion.ExecuteAsync("DELETE FROM Proyectos WHERE Id = @Id", new { Id = id });
+            await conexion.ExecuteAsync("DELETE FROM Usuarios WHERE Id = @Id", new { Id = id });
             return Ok();
         }
     }
